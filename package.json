@@ -1,0 +1,26 @@
+{
+  "name": "mcp-server-npms",
+  "version": "0.0.1-autogenerate.0",
+  "description": "MCP server for npms.io API access with support for package search, suggestions, and detailed package information. Features include advanced search qualifiers for filtering by scope, author, maintainer, keywords, and package status (deprecated, unstable, insecure). Provides comprehensive package metadata including quality scores, popularity metrics, and maintenance information.",
+  "license": "MIT",
+  "author": "Luke Oliff <luke@lukeoliff.com> (https://lu.ke.wtf)",
+  "homepage": "https://github.com/lukeoliff/mcp-server-npms",
+  "bugs": "https://github.com/lukeoliff/mcp-server-npms/issues",
+  "type": "module",
+  "bin": {
+    "mcp-server-npms": "mcp-server.js"
+  },
+  "scripts": {
+    "start": "node mcp-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release": "^24.2.4",
+    "semantic-release-plugin-update-version-in-files": "^2.0.0"
+  }
+}
