@@ -1,5 +1,12 @@
 Change Log
 
+## [1.1.2](https://github.com/lukeocodes/mcp-server-npms/compare/v1.1.1...v1.1.2) (2025-05-18)
+
+
+### Bug Fixes
+
+* fixing shell executable node script ([d437578](https://github.com/lukeocodes/mcp-server-npms/commit/d437578f0090b319ee92f6f773d0db27249d40ed))
+
 ## [1.1.1](https://github.com/lukeocodes/mcp-server-npms/compare/v1.1.0...v1.1.1) (2025-05-18)
 
 
