@@ -92,31 +92,74 @@ get suggestions for "react-router"
 
 The AI agent will infer the appropriate tool from your MCP server and execute it accordingly.
 
-## Available Tools
+<!-- API_DOCS_START -->
+## API
 
-### Search Tool
-Search for NPM packages with advanced filtering capabilities:
+### Resources
 
-- **Query Parameters:**
-  - `q`: Search query with support for filters and modifiers
-  - `from`: Offset to start searching from (0-10000)
-  - `size`: Number of results to return (1-250)
+- `https://api.npms.io/v2`: NPM package search and information interface
 
-### Search Suggestions Tool
-Get package name suggestions:
+### Tools
 
-- **Query Parameters:**
-  - `q`: Search query (qualifiers are ignored)
-  - `size`: Number of suggestions to return (1-100)
+- **search**
+  - Search for npm packages with support for advanced filters and modifiers
+  - Inputs:
+    `q` (String): Search query with support for filters and modifiers:
+      - scope:types - Show/filter results that belong to the @types scope
+      - author:username - Show/filter results by author
+      - maintainer:username - Show/filter results by maintainer
+      - keywords:keyword1,keyword2 - Show/filter results by keywords (use -keyword to exclude)
+      - not:deprecated - Exclude deprecated packages
+      - not:unstable - Exclude packages with version < 1.0.0
+      - not:insecure - Exclude insecure packages
+      - is:deprecated - Show only deprecated packages
+      - is:unstable - Show only unstable packages
+      - is:insecure - Show only insecure packages
+      - boost-exact:false - Disable exact match boosting
+      - score-effect:14 - Set score effect (default: 15.3)
+      - quality-weight:1 - Set quality weight (default: 1.95)
+      - popularity-weight:1 - Set popularity weight (default: 3.3)
+      - maintenance-weight:1 - Set maintenance weight (default: 2.05)
+  - Returns: JSON object containing:
+    - package: Package data (name, version, etc.)
+    - flags: Package flags (deprecated, unstable, insecure)
+    - score: Package score details
+    - searchScore: Computed search score
 
-### Package Information Tools
-Get detailed information about packages:
+- **search_suggestions**
+  - Get package name suggestions with highlighted matches
+  - Inputs:
+    `q` (String): Search query (qualifiers will be ignored)
+  - Returns: JSON object containing:
+    - package: Package data (name, version, etc.)
+    - flags: Package flags (deprecated, unstable, insecure)
+    - score: Package score details
+    - searchScore: Computed search score
+    - highlight: Highlighted matched text
 
-- **Single Package:**
-  - `name`: Package name to get information for
+- **get_package_info**
+  - Get detailed information about a package
+  - Inputs:
+    `name` (String): Package name to get information for
+  - Returns: JSON object containing:
+    - score: Package score information
+    - analyzedAt: Date of last package analysis
+    - collected: Information from all sources
+    - evaluation: Package evaluation details
+    - error: Any error from last analysis attempt
 
-- **Multiple Packages:**
-  - `names`: Array of package names to get information for
+- **get_multi_package_info**
+  - Get detailed information about multiple packages in a single request
+  - Inputs:
+    `names` (String[]): Array of package names to get information for
+  - Returns: JSON object containing:
+    - score: Package score information
+    - analyzedAt: Date of last package analysis
+    - collected: Information from all sources
+    - evaluation: Package evaluation details
+    - error: Any error from last analysis attempt
+
+<!-- API_DOCS_END -->
 
 ## What is MCP?
 

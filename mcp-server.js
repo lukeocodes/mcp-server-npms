@@ -8,7 +8,39 @@ const server = new McpServer({
   version: VERSION,
 })
 
-// Search endpoint
+/**
+ * @api {tool} search Search for npm packages
+ * @apiName Search
+ * @apiGroup NPM
+ * @apiDescription Search for npm packages with support for advanced filters and modifiers
+ * 
+ * @apiParam {String} q Search query with support for filters and modifiers:
+ *   - scope:types - Show/filter results that belong to the @types scope
+ *   - author:username - Show/filter results by author
+ *   - maintainer:username - Show/filter results by maintainer
+ *   - keywords:keyword1,keyword2 - Show/filter results by keywords (use -keyword to exclude)
+ *   - not:deprecated - Exclude deprecated packages
+ *   - not:unstable - Exclude packages with version < 1.0.0
+ *   - not:insecure - Exclude insecure packages
+ *   - is:deprecated - Show only deprecated packages
+ *   - is:unstable - Show only unstable packages
+ *   - is:insecure - Show only insecure packages
+ *   - boost-exact:false - Disable exact match boosting
+ *   - score-effect:14 - Set score effect (default: 15.3)
+ *   - quality-weight:1 - Set quality weight (default: 1.95)
+ *   - popularity-weight:1 - Set popularity weight (default: 3.3)
+ *   - maintenance-weight:1 - Set maintenance weight (default: 2.05)
+ * @apiParam {Number} [from=0] Offset to start searching from (0-10000)
+ * @apiParam {Number} [size=25] Number of results to return (1-250)
+ * 
+ * @apiSuccess {Object} content Response content
+ * @apiSuccess {String} content.type Content type
+ * @apiSuccess {String} content.text JSON string containing:
+ *   - package: Package data (name, version, etc.)
+ *   - flags: Package flags (deprecated, unstable, insecure)
+ *   - score: Package score details
+ *   - searchScore: Computed search score
+ */
 server.tool("search", "Search for npm packages with support for advanced filters and modifiers. The search query supports various qualifiers:\n" +
   "- scope:types - Show/filter results that belong to the @types scope\n" +
   "- author:username - Show/filter results by author\n" +
@@ -44,8 +76,25 @@ server.tool("search", "Search for npm packages with support for advanced filters
   }
 })
 
-// Search suggestions endpoint
-server.tool("searchSuggestions", "Get package search suggestions. Note that any qualifiers in the query will be ignored.\n\n" +
+/**
+ * @api {tool} search_suggestions Get package search suggestions
+ * @apiName Search
+ * @apiGroup NPM
+ * @apiDescription Get package name suggestions with highlighted matches
+ * 
+ * @apiParam {String} q Search query (qualifiers will be ignored)
+ * @apiParam {Number} [size=25] Number of suggestions to return (1-100)
+ * 
+ * @apiSuccess {Object} content Response content
+ * @apiSuccess {String} content.type Content type
+ * @apiSuccess {String} content.text JSON string containing:
+ *   - package: Package data (name, version, etc.)
+ *   - flags: Package flags (deprecated, unstable, insecure)
+ *   - score: Package score details
+ *   - searchScore: Computed search score
+ *   - highlight: Highlighted matched text
+ */
+server.tool("search_suggestions", "Get package search suggestions. Note that any qualifiers in the query will be ignored.\n\n" +
   "Response includes:\n" +
   "- package: Package data (name, version, etc.)\n" +
   "- flags: Package flags (deprecated, unstable, insecure)\n" +
@@ -62,8 +111,24 @@ server.tool("searchSuggestions", "Get package search suggestions. Note that any 
   }
 })
 
-// Get package info endpoint
-server.tool("getPackageInfo", "Get detailed information about a package.\n\n" +
+/**
+ * @api {tool} get_package_info Get package information
+ * @apiName Package
+ * @apiGroup NPM
+ * @apiDescription Get detailed information about a package
+ * 
+ * @apiParam {String} name Package name to get information for
+ * 
+ * @apiSuccess {Object} content Response content
+ * @apiSuccess {String} content.type Content type
+ * @apiSuccess {String} content.text JSON string containing:
+ *   - analyzedAt: Date of last package analysis
+ *   - collected: Information from all sources
+ *   - evaluation: Package evaluation details
+ *   - score: Package score information
+ *   - error: Any error from last analysis attempt
+ */
+server.tool("get_package_info", "Get detailed information about a package.\n\n" +
   "Response includes:\n" +
   "- analyzedAt: Date of last package analysis\n" +
   "- collected: Information from all sources\n" +
@@ -79,8 +144,24 @@ server.tool("getPackageInfo", "Get detailed information about a package.\n\n" +
   }
 })
 
-// Get multiple packages info endpoint
-server.tool("getMultiPackageInfo", "Get detailed information about multiple packages in a single request.\n\n" +
+/**
+ * @api {tool} get_multi_package_info Get multiple packages information
+ * @apiName Package
+ * @apiGroup NPM
+ * @apiDescription Get detailed information about multiple packages in a single request
+ * 
+ * @apiParam {String[]} names Array of package names to get information for
+ * 
+ * @apiSuccess {Object} content Response content
+ * @apiSuccess {String} content.type Content type
+ * @apiSuccess {String} content.text JSON string containing for each package:
+ *   - analyzedAt: Date of last package analysis
+ *   - collected: Information from all sources
+ *   - evaluation: Package evaluation details
+ *   - score: Package score information
+ *   - error: Any error from last analysis attempt
+ */
+server.tool("get_multi_package_info", "Get detailed information about multiple packages in a single request.\n\n" +
   "Response includes for each package:\n" +
   "- analyzedAt: Date of last package analysis\n" +
   "- collected: Information from all sources\n" +

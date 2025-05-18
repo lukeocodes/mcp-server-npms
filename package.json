@@ -11,7 +11,8 @@
     "mcp-server-npms": "mcp-server.js"
   },
   "scripts": {
-    "start": "node mcp-server.js"
+    "start": "node mcp-server.js",
+    "docs": "node scripts/generate_api_docs.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
