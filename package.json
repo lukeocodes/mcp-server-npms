@@ -1,6 +1,6 @@
 {
   "name": "mcp-server-npms",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for npms.io API access with support for package search, suggestions, and detailed package information. Features include advanced search qualifiers for filtering by scope, author, maintainer, keywords, and package status (deprecated, unstable, insecure). Provides comprehensive package metadata including quality scores, popularity metrics, and maintenance information.",
   "license": "MIT",
   "author": "Luke Oliff <luke@lukeoliff.com> (https://lu.ke.wtf)",

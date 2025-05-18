@@ -1,5 +1,12 @@
 Change Log
 
+## [1.1.1](https://github.com/lukeocodes/mcp-server-npms/compare/v1.1.0...v1.1.1) (2025-05-18)
+
+
+### Bug Fixes
+
+* fixing bug in version.js ([4501554](https://github.com/lukeocodes/mcp-server-npms/commit/45015540fa9dd3d2705345cd6fcdb7a82e65665d))
+
 # [1.1.0](https://github.com/lukeocodes/mcp-server-npms/compare/v1.0.0...v1.1.0) (2025-05-18)
 
 
