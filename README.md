@@ -4,7 +4,7 @@
 
 **MCP (Model Context Protocol)** is a framework that allows you to integrate custom tools into AI-assisted development environments—such as Cursor AI. MCP servers expose functionality (like data retrieval or code analysis) so that an LLM-based IDE can call these tools on demand. Learn more about MCP in the [Model Context Protocol Introduction](https://modelcontextprotocol.io/introduction).
 
-This project demonstrates an MCP server built in Node.js that provides two basic tools. One tool, **add**, accepts two numbers and returns their sum, while the other, **getApiKey**, retrieves the API key from the environment (via the `API_KEY` variable).
+This project demonstrates an MCP server built in Node.js that provides powerful NPM package search and information retrieval capabilities through the npms.io API. It offers tools for searching packages, getting package suggestions, and retrieving detailed package information.
 
 ## Requirements
 
@@ -12,11 +12,17 @@ This project demonstrates an MCP server built in Node.js that provides two basic
 
 ## Features
 
-- **MCP Integration:** Exposes tool functionality to LLM-based IDEs.
-- **Addition Tool:** Accepts two numeric parameters and returns their sum.
-- **Env Var Retrieval:** Demonstrates how to load an example environment variable from the configuration file.
-- **Input Validation:** Uses [Zod](https://github.com/colinhacks/zod) for schema validation.
-- **Standard I/O Transport:** Connects via `StdioServerTransport` for integration with development environments.
+- **MCP Integration:** Exposes NPM package search and information tools to LLM-based IDEs.
+- **Advanced Package Search:** Search for NPM packages with support for various filters and modifiers:
+  - Scope filtering (e.g., `scope:types`)
+  - Author and maintainer filtering
+  - Keyword-based filtering
+  - Package status filtering (deprecated, unstable, insecure)
+  - Search score customization
+- **Search Suggestions:** Get package name suggestions with highlighted matches
+- **Package Information:** Retrieve detailed information about single or multiple packages
+- **Input Validation:** Uses [Zod](https://github.com/colinhacks/zod) for schema validation
+- **Standard I/O Transport:** Connects via `StdioServerTransport` for integration with development environments
 
 ## Installation
 
@@ -29,120 +35,88 @@ This project demonstrates an MCP server built in Node.js that provides two basic
 
 2. **Install Dependencies**
 
-   You can install the project dependencies in one of two ways:
-
-   **Option 1: Install using the existing `package.json`**
-
-   Simply run:
-
    ```bash
    npm install
    ```
 
-   **Option 2: Install dependencies manually**
-
-   If you prefer, delete the existing `package.json` and install the required packages manually:
-
-   ```bash
-   npm install @modelcontextprotocol/sdk @coinpaprika/api-nodejs-client zod
-   ```
-
-   Then, update the newly generated `package.json` file to include the following line, which enables ES Modules:
-
-   ```json
-   "type": "module"
-   ```
-
 ## Integrating with Cursor AI
 
-This project includes a `./cursor` subdirectory that contains an `mcp.json` file for configuring the MCP server. Cursor AI uses this file to automatically discover and launch your MCP server. Open the file and update the fields as follows:
+This project includes a `./cursor` subdirectory that contains an `mcp.json` file for configuring the MCP server. Cursor AI uses this file to automatically discover and launch your MCP server.
 
 ### The `./cursor/mcp.json` Structure
-
-Below is the full JSON structure of the configuration file:
 
 ```json
 {
   "mcpServers": {
-    "MCP Server Boilerplate": {
-      "command": "/path/to/node",
-      "args": ["/path/to/mcp-server.js"],
-      "env": {
-        "API_KEY": "abc-1234567890"
-      }
+    "npms": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-npms"
+      ]
     }
   }
 }
 ```
 
-- **mcpServers:**  
-  An object mapping server names to their configuration.
-
-- **MCP Server Boilerplate:**  
-  This is the key for your server configuration. You can name it as you like.
-
-- **command:**  
-  Specifies the absolute path to your Node.js executable. For example:
-
-  ```
-  /home/john/.nvm/versions/node/v20.13.1/bin/node
-  ```
-
-- **args:**  
-  An array containing the absolute path to your MCP server file. For example:
-
-  ```
-  ["/home/john/mcp-server-node/index.js"]
-  ```
-
-- **env:** (Optional)  
-  Defines environment variables for your MCP server process. In this example, the `API_KEY` is set to `"abc-1234567890"`. Adjust this value as needed for your environment.
-
 You can verify the absolute path to your Node.js executable by running `which node` in your terminal.
 
 ### Optional: Configuration Automation Scripts
 
-Easily configure your local environment by automatically updating the mcp.json file with the correct absolute paths. To apply your local settings, run the following commands from your project root:
+Easily configure your local environment by automatically updating the mcp.json file with the correct absolute paths:
 
 ```bash
 chmod +x ./scripts/update_config.sh
 ./scripts/update_config.sh
 ```
 
-This script replaces the placeholder paths in mcp.json with your machine’s absolute paths for Python and the server script, ensuring your configuration settings are always accurate.
-
 ### Optional: Global Cursor settings
 
 You can also move the `mcp.json` file to your global Cursor AI configuration directory located at `~/.cursor` to make the configuration available globally.
 
-## Using the MCP Tool in Cursor Composer (Agent Mode)
+## Using the MCP Tools in Cursor Composer (Agent Mode)
 
-With the MCP server integrated into Cursor AI and with Agent mode enabled in Cursor Composer, simply use a natural language prompt like:
-
-```
-add 3 and 5
-```
-
-or
+With the MCP server integrated into Cursor AI and with Agent mode enabled in Cursor Composer, you can use natural language prompts like:
 
 ```
-what is my API key?
+search for react packages that are not deprecated
 ```
 
-The AI agent will infer the available `add` or `getApiKey` tool from your MCP server and execute it accordingly.
+```
+get information about the express package
+```
 
-## Code Overview
+```
+get suggestions for "react-router"
+```
 
-The project comprises the following key parts:
+The AI agent will infer the appropriate tool from your MCP server and execute it accordingly.
 
-- **MCP Server Initialization:**  
-  The MCP server is instantiated using `McpServer` from the MCP SDK and connected via `StdioServerTransport`.
+## Available Tools
 
-- **Tool Definitions:**
-  - **add:**  
-    Defined with a Zod schema that accepts two numbers (`a` and `b`) and returns their sum as text.
-  - **getApiKey:**  
-    Retrieves the API key from the environment variable `API_KEY` and returns it as text.
+### Search Tool
+Search for NPM packages with advanced filtering capabilities:
+
+- **Query Parameters:**
+  - `q`: Search query with support for filters and modifiers
+  - `from`: Offset to start searching from (0-10000)
+  - `size`: Number of results to return (1-250)
+
+### Search Suggestions Tool
+Get package name suggestions:
+
+- **Query Parameters:**
+  - `q`: Search query (qualifiers are ignored)
+  - `size`: Number of suggestions to return (1-100)
+
+### Package Information Tools
+Get detailed information about packages:
+
+- **Single Package:**
+  - `name`: Package name to get information for
+
+- **Multiple Packages:**
+  - `names`: Array of package names to get information for
 
 ## What is MCP?
 
@@ -153,6 +127,7 @@ The project comprises the following key parts:
 - [Model Context Protocol: typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk)
 - [Use Your Own MCP on Cursor in 5 Minutes](https://dev.to/andyrewlee/use-your-own-mcp-on-cursor-in-5-minutes-1ag4)
 - [Model Context Protocol Introduction](https://modelcontextprotocol.io/introduction)
+- [npms.io API Documentation](https://npms.io)
 
 ## License
 
